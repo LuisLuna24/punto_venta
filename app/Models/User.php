@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
@@ -31,6 +32,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'id_tipo_usuario',
+        'estatus'
     ];
 
     /**
@@ -65,5 +68,15 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function tipoUsuario(): BelongsTo
+    {
+        return $this->belongsTo(tiposUsuarios::class, 'id_tipo_usuario');
+    }
+
+    public function hasRole($role)
+    {
+        return $this->where('email', $this->email)->where('id_tipo_usuario', $role)->exists();
     }
 }
